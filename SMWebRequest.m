@@ -194,8 +194,8 @@ NSString *const SMErrorResponseKey = @"response";
 - (void)processDataInBackground:(NSData *)theData {
     @autoreleasepool {
     
-        id resultObject = theData;
-        
+        __block id resultObject = theData;
+            
         if ([self.delegate respondsToSelector:@selector(webRequest:resultObjectForData:context:)])
             resultObject = [self.delegate webRequest:self resultObjectForData:theData context:self.context];
         
@@ -268,7 +268,13 @@ NSString *const SMErrorResponseKey = @"response";
             // thus we need have a mechanism for keeping ourselves alive during the background
             // processing.
             
-            [self performSelectorInBackground:@selector(processDataInBackground:) withObject:self.data];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [self processDataInBackground:self.data];
+                self.connection = nil;
+                self.data = nil; // don't keep this!
+                [self release];
+            });
+            return;
         }
         else
             [self dispatchComplete:self.data];
