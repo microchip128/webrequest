@@ -20,7 +20,7 @@ NSString *const kSMWebRequestComplete = @"SMWebRequestComplete", *const kSMWebRe
 NSString *const SMErrorResponseKey = @"response";
 
 @interface SMWebRequest ()
-@property (nonatomic, unsafe_unretained) id<SMWebRequestDelegate> delegate;
+@property (nonatomic, strong) id<SMWebRequestDelegate> delegate;
 @property (nonatomic, strong) id context;
 @property (nonatomic, strong) NSMutableArray *targetActions;
 @property (nonatomic, strong) NSMutableData *data;
@@ -270,9 +270,6 @@ NSString *const SMErrorResponseKey = @"response";
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
                 [self processDataInBackground:self.data];
-                self.connection = nil;
-                self.data = nil; // don't keep this!
-                [self release];
             });
             return;
         }
