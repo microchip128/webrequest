@@ -20,7 +20,7 @@ NSString *const kSMWebRequestComplete = @"SMWebRequestComplete", *const kSMWebRe
 NSString *const SMErrorResponseKey = @"response";
 
 @interface SMWebRequest ()
-@property (nonatomic, strong) id<SMWebRequestDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<SMWebRequestDelegate> delegate;
 @property (nonatomic, strong) id context;
 @property (nonatomic, strong) NSMutableArray *targetActions;
 @property (nonatomic, strong) NSMutableData *data;
